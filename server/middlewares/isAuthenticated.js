@@ -6,12 +6,18 @@ const isAuthenticated = async (req, res, next) => {
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return res.status(401).json({
-                message: 'User is unauthenticated. Authorization token is required',
+                message: 'User is unauthenticated. Please login',
                 success: false
             });
         }
-        
+
         const token = authHeader.split(' ')[1];
+        if(!token || token==="undefined"){
+            return res.status(401).json({
+                message: "User is unauthenticated. Please login",
+                success: false
+            })
+        }
         const decode = await jwt.verify(token, process.env.SECRET_KEY);
         if (!decode) {
             return res.status(401).json({
